@@ -8,11 +8,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		LICENSE = LICENSE
+		Project.Test.ruleset = Project.Test.ruleset
 		README.md = README.md
 		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetFunctional.Try", "src\DotNetFunctional.Try\DotNetFunctional.Try.csproj", "{AA549E75-83B7-481E-8422-8742542A1B05}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetFunctional.Try.Test", "test\DotNetFunctional.Try.Test\DotNetFunctional.Try.Test.csproj", "{B15787DE-BF71-4D3D-9F76-072605A4B55B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +27,10 @@ Global
 		{AA549E75-83B7-481E-8422-8742542A1B05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA549E75-83B7-481E-8422-8742542A1B05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA549E75-83B7-481E-8422-8742542A1B05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B15787DE-BF71-4D3D-9F76-072605A4B55B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B15787DE-BF71-4D3D-9F76-072605A4B55B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B15787DE-BF71-4D3D-9F76-072605A4B55B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B15787DE-BF71-4D3D-9F76-072605A4B55B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
