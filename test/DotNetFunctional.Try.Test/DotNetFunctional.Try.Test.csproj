@@ -31,4 +31,8 @@
     </PackageReference>
     <PackageReference Include="XunitXml.TestLogger" Version="2.1.26" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DotNetFunctional.Try\DotNetFunctional.Try.csproj" />
+  </ItemGroup>
 </Project>
