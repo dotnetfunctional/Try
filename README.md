@@ -1,6 +1,6 @@
 # DotNetFunctional.Try
 
-[![Build status](https://ci.appveyor.com/api/projects/status/jokc9aicecq0tvs1/branch/master?svg=true)](https://ci.appveyor.com/project/jotatoledo/try/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/sqaenp7jnbg5v029/branch/master?svg=true)](https://ci.appveyor.com/project/jotatoledo/try/branch/master)
 [![NuGet](http://img.shields.io/nuget/v/DotNetFunctional.Try.svg?logo=nuget)](https://www.nuget.org/packages/DotNetFunctional.Try/)
 
 The Try monad (Error/Exceptional monad) for C#
