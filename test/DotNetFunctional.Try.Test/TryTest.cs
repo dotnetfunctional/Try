@@ -80,7 +80,7 @@ namespace DotNetFunctional.Try.Test
 
             var result = Try.Create(YieldInt);
 
-            result.IsException.Should().BeFalse("the creation fn. throwed an exception.");
+            result.IsException.Should().BeFalse("the creation fn. throwed no exception.");
             result.Value.Should().Be(testVal);
             result.Exception.Should().BeNull("no exception present");
         }
