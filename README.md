@@ -3,7 +3,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/sqaenp7jnbg5v029/branch/master?svg=true)](https://ci.appveyor.com/project/jotatoledo/try/branch/master)
 [![NuGet](http://img.shields.io/nuget/v/DotNetFunctional.Try.svg?logo=nuget)](https://www.nuget.org/packages/DotNetFunctional.Try/)
 
-The Try monad (Error/Exceptional monad) for C#
+The Try monad (Error/Exceptional monad) for C# with LINQ support and rich fluent syntax.
 
 ## Installation
 
@@ -21,7 +21,7 @@ First, you will need to add the following using statement:
 using DotNetFunctional.Try;
 ```
 
-### Lift
+### Wrapping
 
 The standard way to wrap a value or exception is by using the `Try.Create` static method. It takes a delegate, which is **executed
 immediately**. If the delegate throws an exception, the resulting `Try<T>` is a wrapper for that exception; if the delegate
@@ -78,3 +78,55 @@ if(addition.IsException)
     Console.Write($"Exception is: {addition.Exception}");
 }
 ```
+
+### Unwrapping
+
+There are a couple of options available to extract the value or exception wrapped in a `Try<T>` object.
+One of them is `Try<T>.Value`, which raises the exception if no value but an exception is being wrapped:
+
+```csharp
+Try<string> tryString = ....;
+// Throws if tryString wrapps an exception
+string value = tryString.Value;
+```
+
+The `IsException` and `IsValue` properties can be used to determine if its safe to access the `Value` property:
+
+```csharp
+Try<string> tryString = ....;
+if(tryString.IsValue)
+{
+    Console.WriteLine($"Wrapped value is: {tryString.Value}");
+}
+
+Try<string> tryString = ....;
+if(tryString.IsException)
+{
+    Console.WriteLine($"Wrapped exception is: {tryString.Exception}");
+}
+```
+
+Another option is to use deconstruction to get both the exception and value simultaneously:
+
+```csharp
+Try<string> tryString = ....;
+// If a value is wrapped, exception is null
+var (exception, value) = t1;
+```
+
+Finally, a more "functional" way would be using the `Try<T>.Match` method, which always run one of
+two delegates:
+
+```csharp
+Try<int> t1 = ...;
+string result = t1.Match(
+    value => value,
+    exception => exception.Message
+);
+```
+
+## Other projects
+
+Check out some of my other C# projects:
+
+- [DotNetFunctional.Maybe](https://github.com/dotnetfunctional/Maybe): An Option type monad for C# with LINQ support and rich fluent syntax.
