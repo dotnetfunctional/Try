@@ -83,6 +83,17 @@ namespace DotNetFunctional.Try
             : EqualityComparer<T>.Default.Equals(this.value, other.value);
 
         /// <summary>
+        /// Deconstructs this wrapper into two variables.
+        /// </summary>
+        /// <param name="value">The wrapped value, or <c>default</c> if this instance is an exception.</param>
+        /// <param name="exception">The wrapped exception, or <c>null</c> if this instance is a value.</param>
+        public void Deconstruct(out T value, out Exception exception)
+        {
+            exception = this.Exception;
+            value = this.value;
+        }
+
+        /// <summary>
         /// Gets the wrapped exception casted as <typeparamref name="TException"/>. If no exception is wrapped, null is returned.
         /// </summary>
         /// <typeparam name="TException">The type to cast the wrapped exception into.</typeparam>
