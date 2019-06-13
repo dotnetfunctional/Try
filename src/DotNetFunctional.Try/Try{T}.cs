@@ -78,6 +78,15 @@ namespace DotNetFunctional.Try
             : EqualityComparer<T>.Default.Equals(this.value, other.value);
 
         /// <summary>
+        /// Invokes a mapping function depending on wheter a value or exception is wrapped.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the mapping result.</typeparam>
+        /// <param name="whenValue">The action to execute if this instance is a value.</param>
+        /// <param name="whenException">The action to execute if this instance is an exception.</param>
+        /// <returns>The projection result.</returns>
+        public TResult Match<TResult>(Func<T, TResult> whenValue, Func<Exception, TResult> whenException) => this.IsException ? whenException(this.Exception) : whenValue(this.value);
+
+        /// <summary>
         /// Maps a wrapped value to another mapped value.
         /// If this instance is an exception, <paramref name="map"/> is not invoked, and this method returns a wrapper for that exception.
         /// If <paramref name="map"/> throws an exception, this method returns a wrapper for that exception.
