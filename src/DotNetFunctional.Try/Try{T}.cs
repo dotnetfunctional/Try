@@ -37,6 +37,11 @@ namespace DotNetFunctional.Try
         public bool IsException => this.Exception != null;
 
         /// <summary>
+        /// Gets a value indicating whether this wrapps a value or not.
+        /// </summary>
+        public bool IsValue => !this.IsException;
+
+        /// <summary>
         /// Gets the wrapped exception, if any. Returns <c>null</c> if this instance is not an exception.
         /// </summary>
         public Exception Exception { get; }
@@ -76,6 +81,34 @@ namespace DotNetFunctional.Try
             && this.IsException
             ? ReferenceEquals(this.Exception, other.Exception)
             : EqualityComparer<T>.Default.Equals(this.value, other.value);
+
+        /// <summary>
+        /// Deconstructs this wrapper into two variables.
+        /// </summary>
+        /// <param name="value">The wrapped value, or <c>default</c> if this instance is an exception.</param>
+        /// <param name="exception">The wrapped exception, or <c>null</c> if this instance is a value.</param>
+        public void Deconstruct(out T value, out Exception exception)
+        {
+            exception = this.Exception;
+            value = this.value;
+        }
+
+        /// <summary>
+        /// Gets the wrapped exception casted as <typeparamref name="TException"/>. If no exception is wrapped, null is returned.
+        /// </summary>
+        /// <typeparam name="TException">The type to cast the wrapped exception into.</typeparam>
+        /// <returns>The wrapped exception casted into <typeparamref name="T"/>.</returns>
+        public TException ExceptionAs<TException>()
+            where TException : Exception => this.Exception as TException;
+
+        /// <summary>
+        /// Invokes a mapping function depending on wheter a value or exception is wrapped.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the mapping result.</typeparam>
+        /// <param name="whenValue">The action to execute if this instance is a value.</param>
+        /// <param name="whenException">The action to execute if this instance is an exception.</param>
+        /// <returns>The projection result.</returns>
+        public TResult Match<TResult>(Func<T, TResult> whenValue, Func<Exception, TResult> whenException) => this.IsException ? whenException(this.Exception) : whenValue(this.value);
 
         /// <summary>
         /// Maps a wrapped value to another mapped value.
