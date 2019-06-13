@@ -8,13 +8,14 @@
 namespace DotNetFunctional.Try
 {
     using System;
+    using System.Collections.Generic;
     using System.Runtime.ExceptionServices;
 
     /// <summary>
     /// A wrapper for either an exception or a value.
     /// </summary>
     /// <typeparam name="T">The type of the value.</typeparam>
-    public readonly struct Try<T>
+    public readonly struct Try<T> : IEquatable<Try<T>>
     {
         private readonly T value;
 
@@ -45,8 +46,36 @@ namespace DotNetFunctional.Try
         /// </summary>
         public T Value => this.IsException ? throw this.Rethrow() : this.value;
 
+        /// <summary>
+        /// Implementation of the equality operator.
+        /// </summary>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns>True if left and right pass the equality check; false otherwise.</returns>
+        public static bool operator ==(Try<T> left, Try<T> right) => left.Equals(right);
+
+        /// <summary>
+        /// Implementation of the inequality operator.
+        /// </summary>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns>True if left and right arent equal; false otherwise.</returns>
+        public static bool operator !=(Try<T> left, Try<T> right) => !left.Equals(right);
+
         /// <inheritdoc/>
         public override string ToString() => this.IsException ? $"Exception<{this.Exception}>" : $"Value<{this.value}>";
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj) => obj is Try<T> @try && this.Equals(@try);
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => this.IsException ? this.Exception.GetHashCode() : EqualityComparer<T>.Default.GetHashCode(this.value);
+
+        /// <inheritdoc/>
+        public bool Equals(Try<T> other) => this.IsException.Equals(other.IsException)
+            && this.IsException
+            ? ReferenceEquals(this.Exception, other.Exception)
+            : EqualityComparer<T>.Default.Equals(this.value, other.value);
 
         /// <summary>
         /// Maps a wrapped value to another mapped value.
