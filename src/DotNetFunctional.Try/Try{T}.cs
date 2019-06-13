@@ -78,6 +78,14 @@ namespace DotNetFunctional.Try
             : EqualityComparer<T>.Default.Equals(this.value, other.value);
 
         /// <summary>
+        /// Gets the wrapped exception casted as <typeparamref name="TException"/>. If no exception is wrapped, null is returned.
+        /// </summary>
+        /// <typeparam name="TException">The type to cast the wrapped exception into.</typeparam>
+        /// <returns>The wrapped exception casted into <typeparamref name="T"/>.</returns>
+        public TException ExceptionAs<TException>()
+            where TException : Exception => this.Exception as TException;
+
+        /// <summary>
         /// Invokes a mapping function depending on wheter a value or exception is wrapped.
         /// </summary>
         /// <typeparam name="TResult">The type of the mapping result.</typeparam>
