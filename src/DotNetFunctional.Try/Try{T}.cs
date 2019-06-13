@@ -37,6 +37,11 @@ namespace DotNetFunctional.Try
         public bool IsException => this.Exception != null;
 
         /// <summary>
+        /// Gets a value indicating whether this wrapps a value or not.
+        /// </summary>
+        public bool IsValue => !this.IsException;
+
+        /// <summary>
         /// Gets the wrapped exception, if any. Returns <c>null</c> if this instance is not an exception.
         /// </summary>
         public Exception Exception { get; }
