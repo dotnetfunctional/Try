@@ -38,7 +38,7 @@ namespace DotNetFunctional.Try
         /// <typeparam name="T">The type of wraped value.</typeparam>
         /// <param name="value">The value to lift.</param>
         /// <returns>The wrapped value.</returns>
-        public static Try<T> LiftValue<T>(T value) => new Try<T>(value, default, false);
+        public static Try<T> LiftValue<T>(T value) => new Success<T>(value);
 
         /// <summary>
         /// Lifts an exception.
@@ -46,6 +46,6 @@ namespace DotNetFunctional.Try
         /// <typeparam name="T">The type of wrapped value.</typeparam>
         /// <param name="ex">The exception to lift.</param>
         /// <returns>The wrapped exception.</returns>
-        public static Try<T> LiftException<T>(Exception ex) => new Try<T>(default, ex, true);
+        public static Try<T> LiftException<T>(Exception ex) => new Failure<T>(ex);
     }
 }

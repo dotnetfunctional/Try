@@ -19,7 +19,7 @@ namespace DotNetFunctional.Try.Test
             (var ex, var result) = Utils.WrapException<int>(new ArgumentException("Invalid int"));
             Func<int> access = () => result.Value;
 
-            result.IsException.Should().BeTrue("an exception was wrapped.");
+            result.IsFailure.Should().BeTrue("an exception was wrapped.");
             result.Exception.Should().Be(ex);
             access.Should().Throw<ArgumentException>("there is no value.");
         }
@@ -38,10 +38,10 @@ namespace DotNetFunctional.Try.Test
             (var rawInt, var tryInt) = Utils.Wrap(10);
             (var rawString, var tryStr) = Utils.Wrap("hello");
 
-            tryInt.IsException.Should().BeFalse("a value was wrapped");
+            tryInt.IsFailure.Should().BeFalse("a value was wrapped");
             tryInt.Value.Should().Be(rawInt);
             tryInt.Exception.Should().BeNull("no exception present");
-            tryStr.IsException.Should().BeFalse("a value was wrapped");
+            tryStr.IsFailure.Should().BeFalse("a value was wrapped");
             tryStr.Value.Should().Be(rawString);
             tryStr.Exception.Should().BeNull("no exception present");
         }
@@ -52,10 +52,10 @@ namespace DotNetFunctional.Try.Test
             (var rawInt, var tryInt) = Utils.Wrap(default(int?));
             (var rawString, var tryStr) = Utils.Wrap(default(string));
 
-            tryInt.IsException.Should().BeFalse("a value was wrapped");
+            tryInt.IsFailure.Should().BeFalse("a value was wrapped");
             tryInt.Value.Should().Be(rawInt);
             tryInt.Exception.Should().BeNull("no exception present");
-            tryStr.IsException.Should().BeFalse("a value was wrapped");
+            tryStr.IsFailure.Should().BeFalse("a value was wrapped");
             tryStr.Value.Should().Be(rawString);
             tryStr.Exception.Should().BeNull("no exception present");
         }
@@ -68,7 +68,7 @@ namespace DotNetFunctional.Try.Test
 
             var result = Try.Create(YieldInt);
 
-            result.IsException.Should().BeTrue("the creation fn. throwed an exception.");
+            result.IsFailure.Should().BeTrue("the creation fn. throwed an exception.");
             result.Exception.Should().Be(testEx);
         }
 
@@ -80,7 +80,7 @@ namespace DotNetFunctional.Try.Test
 
             var result = Try.Create(YieldInt);
 
-            result.IsException.Should().BeFalse("the creation fn. throwed no exception.");
+            result.IsFailure.Should().BeFalse("the creation fn. throwed no exception.");
             result.Value.Should().Be(testVal);
             result.Exception.Should().BeNull("no exception present");
         }

@@ -70,11 +70,11 @@ namespace DotNetFunctional.Try.Test
             var stringResult = tryString.Where(val => val.StartsWith("x"));
             var intResult = tryInt.Where(val => val > 20);
 
-            stringResult.IsException.Should()
+            stringResult.IsFailure.Should()
                 .BeTrue();
             stringResult.Exception.Should()
                 .BeOfType<InvalidOperationException>("an exception is wrapped when the predicate is unmeet.");
-            intResult.IsException.Should()
+            intResult.IsFailure.Should()
                 .BeTrue();
             intResult.Exception.Should()
                 .BeOfType<InvalidOperationException>("an exception is wrapped when the predicate is unmeet.");
@@ -152,11 +152,11 @@ namespace DotNetFunctional.Try.Test
                             where intVal > 30
                             select intVal;
 
-            stringResult.IsException.Should()
+            stringResult.IsFailure.Should()
                 .BeTrue();
             stringResult.Exception.Should()
                 .BeOfType<InvalidOperationException>();
-            intResult.IsException.Should()
+            intResult.IsFailure.Should()
                 .BeTrue();
             intResult.Exception.Should()
                 .BeOfType<InvalidOperationException>();
