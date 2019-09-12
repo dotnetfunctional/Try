@@ -1,7 +1,8 @@
-#module nuget:?package=Cake.DotNetTool.Module&version=0.3.0
+#module nuget:?package=Cake.DotNetTool.Module&version=0.3.1
 
-#tool nuget:?package=xunit.runner.console&version=2.4.1
-#tool dotnet:?package=GitVersion.Tool&version=5.0.0-beta3-4
+#addin nuget:?package=Cake.Coverlet&version=2.3.4
+
+#tool dotnet:?package=GitVersion.Tool&version=5.0.1
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -18,7 +19,7 @@ var solutionFile = File("./DotNetFunctional.Try.sln");
 var artifactsDir = MakeAbsolute(Directory("artifacts"));
 var srcDir = MakeAbsolute(Directory("src"));
 var testDir = MakeAbsolute(Directory("test"));
-var coverageDir = MakeAbsolute(Directory("tests-results"));
+var coverageDir = MakeAbsolute(Directory("coverage"));
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -109,7 +110,7 @@ Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        var settings = new DotNetCoreTestSettings
+        var testSettings  = new DotNetCoreTestSettings
         {
             Configuration = configuration,
             NoBuild = true,
@@ -117,20 +118,20 @@ Task("Test")
             TestAdapterPath = Directory(".").Path
         };
 
+		var coverletSettings = new CoverletSettings 
+		{
+			CollectCoverage = true,
+			CoverletOutputFormat = CoverletOutputFormat.opencover,
+			CoverletOutputDirectory = coverageDir,
+			CoverletOutputName = "coverage"
+		};
+
         if (IsRunningOnLinuxOrDarwin())
         {
-            settings.Framework = "netcoreapp2.2";
+            testSettings.Framework = "netcoreapp2.2";
         }
 
-        GetFiles(testProjectGlob)
-            .ToList()
-            .ForEach(projectFile => {
-                // Based on https://stackoverflow.com/a/55285729/5394220
-                var testResultsFile = coverageDir.Combine($"{projectFile.GetFilenameWithoutExtension()}.xml");
-                settings.Logger = $"\"xunit;LogFilePath={testResultsFile}\"";
-
-                DotNetCoreTest(projectFile.FullPath, settings);
-            });
+		DotNetCoreTest(solutionFile, testSettings, coverletSettings);
     });
 
 Task("Pack")

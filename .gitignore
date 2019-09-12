@@ -63,13 +63,8 @@ Generated\ Files/
 *.svclog
 *.scc
 
-
-# DotCover is a Code Coverage Tool
-*.dotCover
-
-# AxoCover is a Code Coverage Tool
-.axoCover/*
-!.axoCover/settings.json
+# Coverage
+coverage/
 
 # NuGet Packages
 *.nupkg
