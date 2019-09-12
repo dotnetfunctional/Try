@@ -182,5 +182,45 @@ namespace DotNetFunctional.Try.Test
 
             result.Should().Be(sut.Value);
         }
+
+        [Fact]
+        public void ToStringCorrectlyFormatsFailure()
+        {
+            var (ex, sut) = Utils.WrapException<string>(new InvalidOperationException("test"));
+
+            var result = sut.ToString();
+
+            result.Should().Be($"Failure<{ex}>");
+        }
+
+        [Fact]
+        public void ToStringCorrectlyFormatsSuccess()
+        {
+            var (value, sut) = Utils.Wrap("test");
+
+            var result = sut.ToString();
+
+            result.Should().Be($"Success<{value}>");
+        }
+
+        [Fact]
+        public void GetHashCodeReturnsWrappedExceptionHash()
+        {
+            var (ex, sut) = Utils.WrapException<string>(new InvalidOperationException("test"));
+
+            var result = sut.GetHashCode();
+
+            result.Should().Be(ex.GetHashCode());
+        }
+
+        [Fact]
+        public void GetHashCodeReturnsWrappedValueHash()
+        {
+            var (value, sut) = Utils.Wrap("test");
+
+            var result = sut.GetHashCode();
+
+            result.Should().Be(value.GetHashCode());
+        }
     }
 }

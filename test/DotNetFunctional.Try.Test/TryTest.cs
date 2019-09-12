@@ -19,6 +19,7 @@ namespace DotNetFunctional.Try.Test
             (var ex, var result) = Utils.WrapException<int>(new ArgumentException("Invalid int"));
             Func<int> access = () => result.Value;
 
+            result.IsSuccess.Should().BeFalse("an exception was wrapped.");
             result.IsFailure.Should().BeTrue("an exception was wrapped.");
             result.Exception.Should().Be(ex);
             access.Should().Throw<ArgumentException>("there is no value.");
@@ -38,9 +39,11 @@ namespace DotNetFunctional.Try.Test
             (var rawInt, var tryInt) = Utils.Wrap(10);
             (var rawString, var tryStr) = Utils.Wrap("hello");
 
+            tryInt.IsSuccess.Should().BeTrue("a value was wrapped.");
             tryInt.IsFailure.Should().BeFalse("a value was wrapped");
             tryInt.Value.Should().Be(rawInt);
             tryInt.Exception.Should().BeNull("no exception present");
+            tryStr.IsSuccess.Should().BeTrue("a value was wrapped.");
             tryStr.IsFailure.Should().BeFalse("a value was wrapped");
             tryStr.Value.Should().Be(rawString);
             tryStr.Exception.Should().BeNull("no exception present");
