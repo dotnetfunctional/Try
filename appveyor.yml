@@ -32,12 +32,12 @@ after_build:
   # For once the build has completed
 test: off
 artifacts:
-  - path: artifacts\packages\*.nupkg
-    name: packages
+  - path: artifacts\*.nupkg
+    name: NuGet Packages
+  - path: artifacts\*.snupkg
+    name: NuGet Symbol Packages
 deploy:
 - provider: NuGet
-  name: production
-  artifacts: packages
   api_key:
     secure: RffBv1JUPzoM/xvk4z0YoMh67V7jU2WBvI8RYEl5m3nOQoX1aoJ8UbJ4S4K+jWlS
   on:

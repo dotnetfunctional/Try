@@ -13,6 +13,7 @@
     <RepositoryUrl>https://github.com/dotnetfunctional/Try</RepositoryUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
+    <!--Align with the artifacts glob in CI configs-->
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 

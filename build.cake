@@ -18,8 +18,7 @@ var solutionFile = File("./DotNetFunctional.Try.sln");
 var artifactsDir = MakeAbsolute(Directory("artifacts"));
 var srcDir = MakeAbsolute(Directory("src"));
 var testDir = MakeAbsolute(Directory("test"));
-var testsResultsDir = artifactsDir.Combine(Directory("tests-results"));
-var packagesDir = artifactsDir.Combine(Directory("packages"));
+var coverageDir = MakeAbsolute(Directory("tests-results"));
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -127,7 +126,7 @@ Task("Test")
             .ToList()
             .ForEach(projectFile => {
                 // Based on https://stackoverflow.com/a/55285729/5394220
-                var testResultsFile = testsResultsDir.Combine($"{projectFile.GetFilenameWithoutExtension()}.xml");
+                var testResultsFile = coverageDir.Combine($"{projectFile.GetFilenameWithoutExtension()}.xml");
                 settings.Logger = $"\"xunit;LogFilePath={testResultsFile}\"";
 
                 DotNetCoreTest(projectFile.FullPath, settings);
@@ -144,8 +143,7 @@ Task("Pack")
             Configuration = configuration,
             NoBuild = true,
             NoRestore = true,
-            IncludeSymbols = true,
-            OutputDirectory = packagesDir,
+            OutputDirectory = artifactsDir,
             MSBuildSettings = new DotNetCoreMSBuildSettings()
                 .WithProperty("PackageVersion", packageVersion)
         };
