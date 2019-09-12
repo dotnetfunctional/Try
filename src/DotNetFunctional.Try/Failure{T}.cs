@@ -99,9 +99,6 @@ namespace DotNetFunctional.Try
             => Try.LiftException<TResult>(this.Exception);
 
         private Exception Rethrow()
-        {
-            ExceptionDispatchInfo.Capture(this.Exception).Throw();
-            return this.Exception;
-        }
+            => ExceptionDispatchInfo.Capture(this.Exception).SourceException;
     }
 }
