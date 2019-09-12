@@ -96,36 +96,67 @@ namespace DotNetFunctional.Try.Test
             var bindResult = tryEx.Map(MapInt);
 
             bindResult.Should().Be(tryEx);
-            bindResult.IsException.Should().BeTrue();
+            bindResult.IsFailure.Should().BeTrue();
             bindResult.Exception.Should().Be(ex);
         }
 
         [Fact]
-        public void Bind_Should_ReWrappException_When_ExceptionWrapped()
+        public void DesconstructsExceptionWrapper()
         {
-            (var ex, var tryEx) = Utils.WrapException<int>(new ArgumentException("hello"));
-            Try<int> MapInt(int val) => Try.LiftValue(val + 1);
+            (var sourceEx, var sut) = Utils.WrapException<string>(new ArgumentException("hello"));
 
-            var bindResult = tryEx.Bind(MapInt);
+            var (val, ex) = sut;
 
-            bindResult.Should().Be(tryEx);
-            bindResult.IsException.Should().BeTrue();
-            bindResult.Exception.Should().Be(ex);
+            val.Should().BeNull();
+            ex.Should().Be(sourceEx);
         }
 
         [Fact]
-        public void Bind_Should_ProjectValue_When_ValueWrapped()
+        public void DesconstructsValueWrapper()
         {
-            var tryString = Try.LiftValue(string.Empty);
-            var tryInt = Try.LiftValue<int>(default);
-            Try<int> MapInt(int val) => Try.LiftValue(val + 1);
-            Try<string> MapString(string val) => Try.LiftValue(val + "bla");
+            (var sourceVal, var sut) = Utils.Wrap("hello");
 
-            var intBind = tryInt.Bind(MapInt);
-            var stringBind = tryString.Bind(MapString);
+            var (val, ex) = sut;
 
-            intBind.Should().Be(MapInt(tryInt.Value));
-            stringBind.Should().Be(MapString(tryString.Value));
+            val.Should().Be(sourceVal);
+            ex.Should().BeNull();
+        }
+
+        [Fact]
+        public void RecoverWithReturnsSameValueWrapper()
+        {
+            (var val, var sut) = Utils.Wrap("hello");
+
+            var result = sut.RecoverWith(ex => Try.LiftValue("nothing"));
+
+            result.Should().Be(sut);
+        }
+
+        [Fact]
+        public void RecoverWithMapsExceptionWrapperIntoValueWrapper()
+        {
+            (var sourceEx, var sut) = Utils.WrapException<string>(new ArgumentException("hello"));
+
+            var result = sut.RecoverWith(ex => Try.LiftValue(ex.Message));
+
+            result.IsSuccess.Should().BeTrue();
+            result.Value.Should().Be(sourceEx.Message);
+        }
+
+        [Fact]
+        public void RecoverWithMapsExceptionWrapperIntoNewExceptionWrapper()
+        {
+            (var sourceEx, var sut) = Utils.WrapException<string>(new ArgumentException("hello"));
+            Exception RecoverFn(Exception ex)
+            {
+                return new InvalidOperationException("test", ex);
+            }
+
+            var result = sut.RecoverWith(ex => Try.LiftException<string>(RecoverFn(ex)));
+
+            result.Should().NotBe(sut);
+            result.IsFailure.Should().BeTrue();
+            result.Exception.Should().BeEquivalentTo(RecoverFn(sourceEx));
         }
     }
 }

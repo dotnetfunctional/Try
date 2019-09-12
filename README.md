@@ -125,6 +125,17 @@ string result = t1.Match(
 );
 ```
 
+## Recovering
+
+`Try<T>.RecoverWith` allows you to map an exception wrapper into a new one. Futhermore, it alloes
+you to access the wrapped exception. This can be useful in cases when you want to map an exception into
+another one before moving along the pipeline. For example:
+
+```csharp
+Try<string> wrapper = Try.Create(()=> MayThrowArgumentNullException(null));
+Try<string> invalid = wrapper.RecoverWith(ex => Try.LiftException<string>(new ArgumentException("Invalid", ex))):
+```
+
 ## Other projects
 
 Check out some of my other C# projects:
