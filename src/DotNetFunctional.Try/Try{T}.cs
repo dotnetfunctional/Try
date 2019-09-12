@@ -113,6 +113,14 @@ namespace DotNetFunctional.Try
         public Try<TResult> Map<TResult>(Func<T, TResult> map) => this.Bind(value => Try.Create(() => map(value)));
 
         /// <summary>
+        /// Performs a side-effect at once.
+        /// </summary>
+        /// <param name="successFn">The side-effect to run if this is success. If it throws, the exception wont be wrapped.</param>
+        /// <param name="failureFn">The side-effect to run if this is failure. If it throws, the exception wont be wrapped.</param>
+        /// <returns>The same wrapper.</returns>
+        public abstract Try<T> Tap(Action<T> successFn = null, Action<Exception> failureFn = null);
+
+        /// <summary>
         /// Binds the wrapped value.
         /// If this instance is an exception, <paramref name="bind"/> is not invoked, and this method returns a wrapper for that exception.
         /// </summary>

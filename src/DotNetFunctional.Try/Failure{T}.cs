@@ -84,6 +84,13 @@ namespace DotNetFunctional.Try
         }
 
         /// <inheritdoc/>
+        public override Try<T> Tap(Action<T> successFn = null, Action<Exception> failureFn = null)
+        {
+            failureFn?.Invoke(this.Exception);
+            return this;
+        }
+
+        /// <inheritdoc/>
         public override string ToString()
             => $"Failure<{this.Exception}>";
 

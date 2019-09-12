@@ -158,5 +158,29 @@ namespace DotNetFunctional.Try.Test
             result.IsFailure.Should().BeTrue();
             result.Exception.Should().BeEquivalentTo(RecoverFn(sourceEx));
         }
+
+        [Fact]
+        public void Tap_Should_RunFailureSideEffectAndNotRunSuccessSideEffect_When_OnFailure()
+        {
+            var initial = "initial";
+            string result = initial;
+            var (ex, sut) = Utils.WrapException<string>(new InvalidOperationException("test"));
+
+            sut.Tap(v => result = v, e => result = e.Message);
+
+            result.Should().Be(ex.Message);
+        }
+
+        [Fact]
+        public void Tap_Should_RunSuccessSideEffectAndNotFailureSideEffect_When_OnSuccess()
+        {
+            var initial = "initial";
+            string result = initial;
+            var sut = Try.LiftValue("next");
+
+            sut.Tap(val => result = val, e => result = e.Message);
+
+            result.Should().Be(sut.Value);
+        }
     }
 }
