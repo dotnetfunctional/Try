@@ -142,7 +142,7 @@ Try<string> invalid = wrapper.RecoverWith(ex => Try.LiftException<string>(new Ar
 To perform side effects, `Try<T>` exposes a `Tap<T>(succesFn: Action<T>, failureFn: Action<Exception>)` method. It
 takes 2 delegates, invokes the according one depending on if the wrapper is a failure or success and returns the original wrapper.
 
-````csharp
+```csharp
 strig value = ...
 Try<string> wrapper = Try.Create(()=> MayThrowArgumentNullException(value))
                          .Tap(val => Console.WriteLine(value), ex => Console.WriteLine(ex.Message));
