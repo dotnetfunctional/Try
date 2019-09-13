@@ -180,5 +180,31 @@ namespace DotNetFunctional.Try.Test
             tryInt.Should()
                 .Be(tryInt, "the new wrapper has the same value.");
         }
+
+        [Fact]
+        public void QueryExpression_Should_CorrectlyYield_When_FlatteningNestedWrappers()
+        {
+            var source = "hello";
+            var sut = Try.LiftValue(Try.LiftValue(source));
+
+            var result = from nested in sut
+                         from value in nested
+                         select value;
+
+            result.Should()
+                .Be(sut.Value, "the new wrapper has the nested wrapper.");
+        }
+
+        [Fact]
+        public void SelectMany_Should_CorrectlyYield_When_FlatteningNestedWrapper()
+        {
+            var source = "hello";
+            var sut = Try.LiftValue(Try.LiftValue(source));
+
+            var result = sut.SelectMany(val => val);
+
+            result.Should()
+                .Be(sut.Value, "the new wrapper has the nested wrapper.");
+        }
     }
 }
