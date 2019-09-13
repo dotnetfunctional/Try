@@ -8,11 +8,18 @@
 namespace DotNetFunctional.Try.Test
 {
     using System;
+    using System.Collections.Generic;
     using FluentAssertions;
     using Xunit;
 
     public partial class TryTest
     {
+        public static IEnumerable<object[]> GetInstances()
+        {
+            yield return new[] { Try.LiftException<string>(new InvalidOperationException("test")) };
+            yield return new[] { Try.LiftValue<string>("test") };
+        }
+
         [Fact]
         public void ExceptionAs_Should_ReturnNull_When_ValueWrapped()
         {
@@ -123,6 +130,39 @@ namespace DotNetFunctional.Try.Test
         }
 
         [Fact]
+        public void RecoverReturnsSameValueWrapper()
+        {
+            (var val, var sut) = Utils.Wrap("hello");
+
+            var result = sut.Recover(ex => "nothing");
+
+            result.Should().Be(sut);
+        }
+
+        [Fact]
+        public void RecoverReturnsWrappedResult()
+        {
+            var sut = Try.LiftException<string>(new InvalidOperationException("test"));
+
+            var result = sut.Recover(ex => "nothing");
+
+            result.Should().NotBe(sut);
+            result.Value.Should().Be("nothing");
+        }
+
+        [Fact]
+        public void RecoverReturnsWrapsInnerException()
+        {
+            var innerException = new ArgumentNullException("inner");
+            var sut = Try.LiftException<string>(new InvalidOperationException("test"));
+
+            var result = sut.Recover(ex => throw innerException);
+
+            result.Should().NotBe(sut);
+            result.Exception.Should().Be(innerException);
+        }
+
+        [Fact]
         public void RecoverWithReturnsSameValueWrapper()
         {
             (var val, var sut) = Utils.Wrap("hello");
@@ -160,6 +200,18 @@ namespace DotNetFunctional.Try.Test
         }
 
         [Fact]
+        public void RecoverWithReturnsWrapsInnerException()
+        {
+            var innerException = new ArgumentNullException("inner");
+            var sut = Try.LiftException<string>(new InvalidOperationException("test"));
+
+            var result = sut.RecoverWith(ex => throw innerException);
+
+            result.Should().NotBe(sut);
+            result.Exception.Should().Be(innerException);
+        }
+
+        [Fact]
         public void Tap_Should_RunFailureSideEffectAndNotRunSuccessSideEffect_When_OnFailure()
         {
             var initial = "initial";
@@ -181,6 +233,68 @@ namespace DotNetFunctional.Try.Test
             sut.Tap(val => result = val, e => result = e.Message);
 
             result.Should().Be(sut.Value);
+        }
+
+        [Fact]
+        public void ToStringCorrectlyFormatsFailure()
+        {
+            var (ex, sut) = Utils.WrapException<string>(new InvalidOperationException("test"));
+
+            var result = sut.ToString();
+
+            result.Should().Be($"Failure<{ex}>");
+        }
+
+        [Fact]
+        public void ToStringCorrectlyFormatsSuccess()
+        {
+            var (value, sut) = Utils.Wrap("test");
+
+            var result = sut.ToString();
+
+            result.Should().Be($"Success<{value}>");
+        }
+
+        [Fact]
+        public void GetHashCodeReturnsWrappedExceptionHash()
+        {
+            var (ex, sut) = Utils.WrapException<string>(new InvalidOperationException("test"));
+
+            var result = sut.GetHashCode();
+
+            result.Should().Be(ex.GetHashCode());
+        }
+
+        [Fact]
+        public void GetHashCodeReturnsWrappedValueHash()
+        {
+            var (value, sut) = Utils.Wrap("test");
+
+            var result = sut.GetHashCode();
+
+            result.Should().Be(value.GetHashCode());
+        }
+
+        [Theory]
+        [MemberData(nameof(GetInstances))]
+        public void EqualityOperatorWorksOnSameInstances(Try<string> sut)
+        {
+            var other = sut;
+
+            var result = sut == other;
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetInstances))]
+        public void InequalityOperatorWorksOnSameInstances(Try<string> sut)
+        {
+            var other = sut;
+
+            var result = sut != other;
+
+            result.Should().BeFalse();
         }
     }
 }

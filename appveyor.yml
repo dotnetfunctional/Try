@@ -18,26 +18,24 @@ assembly_info:
     # We'll version the binaries and the NuGet package in the build script
     patch: false                      
 install:
-  # The `SDK` is included in the `Visual Studio 2017` image
-  # https://www.appveyor.com/docs/windows-images-software/#net-framework
-  - ps: dotnet tool install -g Cake.Tool --version 0.33.0
+  - ps: dotnet tool install -g Cake.Tool --version 0.34.1
+  - ps: dotnet tool install -g coveralls.net --version 1.0.0
 before_build:
   - ps: dotnet --version
 build_script:
   # Download/install modules defined by #module directives
   - ps: dotnet cake build.cake --bootstrap
-  # Run cake script
   - ps: dotnet cake build.cake --pack
 after_build:
-  # For once the build has completed
+  - ps: csmacnz.coveralls --opencover -i coverage\coverage.opencover.xml --useRelativePaths
 test: off
 artifacts:
-  - path: artifacts\packages\*.nupkg
-    name: packages
+  - path: artifacts\*.nupkg
+    name: NuGet Packages
+  - path: artifacts\*.snupkg
+    name: NuGet Symbol Packages
 deploy:
 - provider: NuGet
-  name: production
-  artifacts: packages
   api_key:
     secure: RffBv1JUPzoM/xvk4z0YoMh67V7jU2WBvI8RYEl5m3nOQoX1aoJ8UbJ4S4K+jWlS
   on:
