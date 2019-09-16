@@ -65,6 +65,7 @@ Generated\ Files/
 
 # Coverage
 coverage/
+**/coverage.*.xml
 
 # NuGet Packages
 *.nupkg
