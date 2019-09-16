@@ -7,23 +7,24 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'vs2017-win2016'
 
 variables:
   buildConfiguration: 'Release'
 
 steps:
 - script: dotnet restore
-  displayName: 'dotnet restore'
+  displayName: 'Restore'
 - script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+  displayName: 'Build $(buildConfiguration)'
 - task: DotNetCoreCLI@2
-  displayName: dotnet test
+  displayName: Test
   inputs:
     command: test
     arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
     nobuild: true
 - task: PublishTestResults@2
+  displayName: Publish coverage
   inputs:
     testResultsFormat: 'XUnit'
     testResultsFiles: '**/coverage.cobertura.xml'
